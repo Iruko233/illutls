@@ -40,6 +40,9 @@ type H2Settings struct {
 	MaxHeaderListSize    uint32
 	// NoRFC7540Priorities corresponds to SETTINGS_NO_RFC7540_PRIORITIES (0x09).
 	NoRFC7540Priorities uint32
+
+	// SettingsOrder explicitly defines the order of settings. If empty, a default order is used.
+	SettingsOrder []uint16
 }
 
 // H2Priority corresponds to the PRIORITY field in an HTTP/2 HEADERS frame.
