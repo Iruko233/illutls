@@ -12,8 +12,8 @@ It combines `utls` (for TLS ClientHello simulation) with `fhttp` (for HTTP/2 fra
 
 ### Features
 
-- **TLS Fingerprinting**: Accurately simulates JA3/JA4 signatures using `utls`.
-- **HTTP/2 Fingerprinting**: Mimics real browser HTTP/2 settings, frame order, and pseudo-header order using `fhttp`.
+- **TLS Fingerprinting**: Precisely controls ClientHello parameters using `utls` to perfectly simulate JA3/JA4 signatures.
+- **HTTP/2 Fingerprinting**: Controls HTTP/2 settings, frame order, and pseudo-header order at the lowest level using `fhttp`, accurately simulating real browser behavior.
 - **Pre-configured Profiles**: Ships with real-world browser profiles covering Chrome, Firefox, Edge, and Safari across Windows, macOS, Linux, Android, and iOS.
 - **Concurrency Safe**: `Client` is entirely safe for concurrent use by multiple goroutines.
 - **Proxy Support**: Easily route your simulated requests through HTTP/SOCKS5 proxies.
@@ -114,12 +114,12 @@ resp, err := client.Do(req)
 
 `illutls` 是一个 Go 语言 HTTP 客户端，旨在模拟真实浏览器的 TLS 指纹和 HTTP 请求头。
 
-它将 `utls`（用于模拟 TLS ClientHello）和 `fhttp`（用于 HTTP/2 帧级别的指纹控制）结合在一起，在每次连接时都能呈现出完整且真实的浏览器特征。
+它将 `utls`（用于精确实控 TLS ClientHello）和 `fhttp`（用于底层 HTTP/2 帧级别的通信控制）结合在一起，在每次连接时都能完美模拟出完整且真实的浏览器特征。
 
 ### 特性
 
-- **TLS 指纹模拟**：使用 `utls` 精确模拟 JA3/JA4 签名。
-- **HTTP/2 指纹模拟**：使用 `fhttp` 模拟真实浏览器的 HTTP/2 Settings、帧顺序和伪头（Pseudo-header）顺序。
+- **TLS 指纹控制**：使用 `utls` 精确实控 ClientHello 参数，从而完美模拟 JA3/JA4 签名。
+- **HTTP/2 指纹控制**：使用 `fhttp` 在底层控制 HTTP/2 Settings、帧顺序和伪头（Pseudo-header）顺序，精准模拟真实浏览器行为。
 - **预置配置（Profiles）**：内置了覆盖 Windows, macOS, Linux, Android 和 iOS 平台的真实浏览器特征（包含 Chrome, Firefox, Edge, Safari）。
 - **并发安全**：`Client` 完全支持多 Goroutine 并发安全调用。
 - **代理支持**：可以轻松将请求通过 HTTP/SOCKS5 代理进行转发。
