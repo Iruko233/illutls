@@ -7,6 +7,7 @@ Here is the list of all currently supported browser profiles in illutls.
 | \"chrome-138-android-10\" | android 10 | chrome 138 | Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36 |
 | \"chrome-147-android-10\" | android 10 | chrome 147 | Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Mobile Safari/537.36 |
 | \"chrome-147-windows-10\" | windows 10 | chrome 147 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 |
+| \"chrome-148-mac-10-15\" | mac 10-15 | chrome 148 | Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 |
 | \"chrome-149-windows-10\" | windows 10 | chrome 149 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 |
 | \"chrome-150-windows-10\" | windows 10 | chrome 150 | Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 |
 | \"chrome-86-windows-7\" | windows 7 | chrome 86 | Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36 |
