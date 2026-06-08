@@ -14,7 +14,7 @@ import (
 // Notes: Quark 10.5 shares a highly similar network stack to UCBrowser, featuring randomized extensions, ALPS (17613), ECH (65037), missing ML-KEM768, and missing sec-ch-ua headers.
 func init() {
 	register(&illutls.BrowserProfile{
-		Name:      "android_15_quark_10",
+		Name:      "quark-10-android-15",
 		UserAgent: "Mozilla/5.0 (Linux; U; Android 15; zh-CN; V2231A Build/AP3A.240905.015.A2) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/123.0.6312.80 Quark/10.5.1.1026 Mobile Safari/537.36",
 		TLSSpec: &utls.ClientHelloSpec{
 			TLSVersMin: utls.VersionTLS12,
@@ -39,9 +39,9 @@ func init() {
 			},
 			CompressionMethods: []byte{0x00},
 			Extensions: []utls.TLSExtension{
-				&utls.UtlsGREASEExtension{}, // First GREASE
+				&utls.UtlsGREASEExtension{},    // First GREASE
 				&utls.SessionTicketExtension{}, // 35
-				&utls.SCTExtension{},                  // 18
+				&utls.SCTExtension{},           // 18
 				&utls.KeyShareExtension{KeyShares: []utls.KeyShare{ // 51
 					{Group: utls.GREASE_PLACEHOLDER, Data: []byte{0}},
 					{Group: utls.X25519}, // 29
@@ -52,10 +52,10 @@ func init() {
 					utls.VersionTLS12,
 				}},
 				&utls.GenericExtension{Id: 17613, Data: []byte{0x00, 0x03, 0x02, 0x68, 0x32}}, // 17613 ALPS
-				&utls.ExtendedMasterSecretExtension{}, // 23
-				&utls.GenericExtension{Id: 65037, Data: []byte{}}, // 65037 ECH
+				&utls.ExtendedMasterSecretExtension{},                                         // 23
+				&utls.GenericExtension{Id: 65037, Data: []byte{}},                             // 65037 ECH
 				&utls.RenegotiationInfoExtension{Renegotiation: utls.RenegotiateOnceAsClient}, // 65281
-				&utls.ALPNExtension{AlpnProtocols: []string{"h2", "http/1.1"}}, // 16
+				&utls.ALPNExtension{AlpnProtocols: []string{"h2", "http/1.1"}},                // 16
 				&utls.SupportedCurvesExtension{Curves: []utls.CurveID{ // 10
 					utls.GREASE_PLACEHOLDER,
 					utls.X25519,
@@ -63,7 +63,7 @@ func init() {
 					utls.CurveP384,
 				}},
 				&utls.UtlsCompressCertExtension{Algorithms: []utls.CertCompressionAlgo{utls.CertCompressionBrotli}}, // 27
-				&utls.SupportedPointsExtension{SupportedPoints: []byte{0x00}}, // 11
+				&utls.SupportedPointsExtension{SupportedPoints: []byte{0x00}},                                       // 11
 				&utls.SignatureAlgorithmsExtension{SupportedSignatureAlgorithms: []utls.SignatureScheme{ // 13
 					utls.ECDSAWithP256AndSHA256,
 					utls.PSSWithSHA256,
@@ -74,18 +74,18 @@ func init() {
 					utls.PSSWithSHA512,
 					utls.PKCS1WithSHA512,
 				}},
-				&utls.StatusRequestExtension{},        // 5
-				&utls.SNIExtension{},        // 0
+				&utls.StatusRequestExtension{}, // 5
+				&utls.SNIExtension{},           // 0
 				&utls.PSKKeyExchangeModesExtension{Modes: []uint8{utls.PskModeDHE}}, // 45
-				&utls.UtlsGREASEExtension{}, // Last GREASE
+				&utls.UtlsGREASEExtension{},                                         // Last GREASE
 			},
 		},
 		H2Settings: illutls.H2Settings{
-			HeaderTableSize:      65536,
-			EnablePush:           0,
-			InitialWindowSize:    6291456,
-			MaxHeaderListSize:    262144,
-			SettingsOrder:        []uint16{1, 2, 4, 6},
+			HeaderTableSize:   65536,
+			EnablePush:        0,
+			InitialWindowSize: 6291456,
+			MaxHeaderListSize: 262144,
+			SettingsOrder:     []uint16{1, 2, 4, 6},
 		},
 		H2WindowUpdate: 15663105,
 		H2Priority: illutls.H2Priority{
@@ -105,6 +105,7 @@ func init() {
 			"accept",
 			"sec-fetch-site",
 			"sec-fetch-mode",
+			"sec-fetch-user",
 			"sec-fetch-dest",
 			"accept-encoding",
 			"priority",
@@ -113,9 +114,10 @@ func init() {
 			"upgrade-insecure-requests": "1",
 			"user-agent":                "Mozilla/5.0 (Linux; U; Android 15; zh-CN; V2231A Build/AP3A.240905.015.A2) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/123.0.6312.80 Quark/10.5.1.1026 Mobile Safari/537.36",
 			"accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-			"sec-fetch-site":            "cross-site",
+			"sec-fetch-site":            "none",
 			"sec-fetch-mode":            "navigate",
-			"sec-fetch-dest":            "iframe",
+			"sec-fetch-user":            "?1",
+			"sec-fetch-dest":            "document",
 			"accept-encoding":           "gzip, deflate",
 			"priority":                  "u=0, i",
 		},

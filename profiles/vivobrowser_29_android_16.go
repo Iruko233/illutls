@@ -13,7 +13,7 @@ import (
 // Status: Verified Clean (Simulated Android 16 VivoBrowser 29)
 func init() {
 	register(&illutls.BrowserProfile{
-		Name:      "android_16_vivobrowser_29",
+		Name:      "vivobrowser-29-android-16",
 		UserAgent: "Mozilla/5.0 (Linux; Android 16; V2241HA) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.200 Mobile Safari/537.36 VivoBrowser/29.4.0.0",
 		TLSSpec: &utls.ClientHelloSpec{
 			TLSVersMin: utls.VersionTLS12,
@@ -38,7 +38,7 @@ func init() {
 			},
 			CompressionMethods: []byte{0x00},
 			Extensions: []utls.TLSExtension{
-				&utls.UtlsGREASEExtension{}, // First GREASE
+				&utls.UtlsGREASEExtension{},           // First GREASE
 				&utls.ExtendedMasterSecretExtension{}, // 23
 				&utls.SignatureAlgorithmsExtension{SupportedSignatureAlgorithms: []utls.SignatureScheme{ // 13
 					utls.ECDSAWithP256AndSHA256,
@@ -51,9 +51,9 @@ func init() {
 					utls.PKCS1WithSHA512,
 				}},
 				&utls.SCTExtension{}, // 18
-				&utls.SupportedPointsExtension{SupportedPoints: []byte{0x00}}, // 11
-				&utls.GenericExtension{Id: 65037, Data: []byte{}}, // 65037 ECH
-				&utls.PSKKeyExchangeModesExtension{Modes: []uint8{utls.PskModeDHE}}, // 45
+				&utls.SupportedPointsExtension{SupportedPoints: []byte{0x00}},                 // 11
+				&utls.GenericExtension{Id: 65037, Data: []byte{}},                             // 65037 ECH
+				&utls.PSKKeyExchangeModesExtension{Modes: []uint8{utls.PskModeDHE}},           // 45
 				&utls.GenericExtension{Id: 17513, Data: []byte{0x00, 0x03, 0x02, 0x68, 0x32}}, // 17513 ALPS
 				&utls.SupportedCurvesExtension{Curves: []utls.CurveID{ // 10
 					utls.GREASE_PLACEHOLDER,
@@ -65,7 +65,7 @@ func init() {
 					{Group: utls.GREASE_PLACEHOLDER, Data: []byte{0}},
 					{Group: utls.X25519},
 				}},
-				&utls.ALPNExtension{AlpnProtocols: []string{"h2", "http/1.1"}}, // 16
+				&utls.ALPNExtension{AlpnProtocols: []string{"h2", "http/1.1"}},                                      // 16
 				&utls.UtlsCompressCertExtension{Algorithms: []utls.CertCompressionAlgo{utls.CertCompressionBrotli}}, // 27
 				&utls.SupportedVersionsExtension{Versions: []uint16{ // 43
 					utls.GREASE_PLACEHOLDER,
@@ -75,8 +75,8 @@ func init() {
 				&utls.RenegotiationInfoExtension{Renegotiation: utls.RenegotiateOnceAsClient}, // 65281
 				&utls.StatusRequestExtension{}, // 5
 				&utls.SessionTicketExtension{}, // 35
-				&utls.SNIExtension{}, // 0
-				&utls.UtlsGREASEExtension{}, // Last GREASE
+				&utls.SNIExtension{},           // 0
+				&utls.UtlsGREASEExtension{},    // Last GREASE
 			},
 		},
 		H2Settings: illutls.H2Settings{
@@ -108,6 +108,7 @@ func init() {
 			"accept",
 			"sec-fetch-site",
 			"sec-fetch-mode",
+			"sec-fetch-user",
 			"sec-fetch-dest",
 			"accept-encoding",
 			"accept-language",
@@ -120,9 +121,10 @@ func init() {
 			"upgrade-insecure-requests": "1",
 			"user-agent":                "Mozilla/5.0 (Linux; Android 16; V2241HA) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.200 Mobile Safari/537.36 VivoBrowser/29.4.0.0",
 			"accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,image/heif,application/signed-exchange;v=b3;q=0.7",
-			"sec-fetch-site":            "cross-site",
+			"sec-fetch-site":            "none",
 			"sec-fetch-mode":            "navigate",
-			"sec-fetch-dest":            "iframe",
+			"sec-fetch-user":            "?1",
+			"sec-fetch-dest":            "document",
 			"accept-encoding":           "gzip, deflate, br, zstd",
 			"accept-language":           "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
 			"priority":                  "u=0, i",

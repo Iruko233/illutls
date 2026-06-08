@@ -5,17 +5,17 @@ import (
 	utls "github.com/refraction-networking/utls"
 )
 
-// JA3: 771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,0-23-51-35-43-11-10-18-65037-13-65281-45-16-5-27-17613,4588-29-23-24,0
-// JA3 HASH: e18b9b36df14d49caa91272795031b1c
-// JA4: t13d1516h2_8daaf6152771_d8a2da3f94cd
+// JA3: 771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,45-51-51764-35-0-17613-65281-5-11-16-13-18-10-27-23-65037-43,4588-29-23-24,0
+// JA3 HASH: a83aa52b676ea19698afa69aca1f2a3d
+// JA4: t13d1517h2_8daaf6152771_cb7bf5808d99
 // H2: 1:65536;2:0;4:6291456;6:262144|15663105|0|m,a,s,p
 // H2 HASH: 52d84b11737d980aef856699f885ca86
-// Status: Verified Clean (Simulated Windows 10 Chrome 149)
-// Notes: Chrome 149 introduces randomized TLS extension shuffling. ECH is enabled. New header sec-fetch-storage-access is present.
+// Status: Verified Clean (Simulated Windows 10 Chrome 150)
+// Notes: Chrome 150 introduces random extension shuffling and new ML-DSA Post-Quantum Signature Schemes. JA3 is essentially randomized per-connection, but JA4 remains stable.
 func init() {
 	register(&illutls.BrowserProfile{
-		Name:      "windows_10_chrome_149",
-		UserAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+		Name:      "chrome-150-windows-10",
+		UserAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
 		TLSSpec: &utls.ClientHelloSpec{
 			TLSVersMin: utls.VersionTLS12,
 			TLSVersMax: utls.VersionTLS13,
@@ -39,31 +39,25 @@ func init() {
 			},
 			CompressionMethods: []byte{0x00},
 			Extensions: []utls.TLSExtension{
-				&utls.UtlsGREASEExtension{}, // First GREASE
-				&utls.SNIExtension{}, // 0
-				&utls.ExtendedMasterSecretExtension{}, // 23
+				&utls.UtlsGREASEExtension{},                                         // First GREASE
+				&utls.PSKKeyExchangeModesExtension{Modes: []uint8{utls.PskModeDHE}}, // 45
 				&utls.KeyShareExtension{KeyShares: []utls.KeyShare{ // 51
 					{Group: utls.GREASE_PLACEHOLDER, Data: []byte{0}},
-					{Group: utls.CurveID(4588)}, // 4588
-					{Group: utls.X25519}, // 29
+					{Group: utls.CurveID(4588)},
+					{Group: utls.X25519},
 				}},
-				&utls.SessionTicketExtension{}, // 35
-				&utls.SupportedVersionsExtension{Versions: []uint16{ // 43
-					utls.GREASE_PLACEHOLDER,
-					utls.VersionTLS13,
-					utls.VersionTLS12,
-				}},
-				&utls.SupportedPointsExtension{SupportedPoints: []byte{0x00}}, // 11
-				&utls.SupportedCurvesExtension{Curves: []utls.CurveID{ // 10
-					utls.GREASE_PLACEHOLDER,
-					utls.X25519MLKEM768, // 4588
-					utls.X25519, // 29
-					utls.CurveP256,
-					utls.CurveP384,
-				}},
-				&utls.SCTExtension{}, // 18
-				&utls.GenericExtension{Id: 65037, Data: []byte{}}, // 65037 ECH
+				&utls.GenericExtension{Id: 51764, Data: []byte{}},                             // 51764 (Experimental)
+				&utls.SessionTicketExtension{},                                                // 35
+				&utls.SNIExtension{},                                                          // 0
+				&utls.GenericExtension{Id: 17613, Data: []byte{0x00, 0x03, 0x02, 0x68, 0x32}}, // 17613 ALPS
+				&utls.RenegotiationInfoExtension{Renegotiation: utls.RenegotiateOnceAsClient}, // 65281
+				&utls.StatusRequestExtension{},                                                // 5
+				&utls.SupportedPointsExtension{SupportedPoints: []byte{0x00}},                 // 11
+				&utls.ALPNExtension{AlpnProtocols: []string{"h2", "http/1.1"}},                // 16
 				&utls.SignatureAlgorithmsExtension{SupportedSignatureAlgorithms: []utls.SignatureScheme{ // 13
+					utls.SignatureScheme(2308), // ML-DSA?
+					utls.SignatureScheme(2309), // ML-DSA?
+					utls.SignatureScheme(2310), // ML-DSA?
 					utls.ECDSAWithP256AndSHA256,
 					utls.PSSWithSHA256,
 					utls.PKCS1WithSHA256,
@@ -73,21 +67,33 @@ func init() {
 					utls.PSSWithSHA512,
 					utls.PKCS1WithSHA512,
 				}},
-				&utls.RenegotiationInfoExtension{Renegotiation: utls.RenegotiateOnceAsClient}, // 65281
-				&utls.PSKKeyExchangeModesExtension{Modes: []uint8{utls.PskModeDHE}}, // 45
-				&utls.ALPNExtension{AlpnProtocols: []string{"h2", "http/1.1"}}, // 16
-				&utls.StatusRequestExtension{}, // 5
+				&utls.SCTExtension{}, // 18
+				&utls.SupportedCurvesExtension{Curves: []utls.CurveID{ // 10
+					utls.GREASE_PLACEHOLDER,
+					utls.CurveID(4588), // X25519MLKEM768
+					utls.X25519,
+					utls.CurveP256,
+					utls.CurveP384,
+				}},
 				&utls.UtlsCompressCertExtension{Algorithms: []utls.CertCompressionAlgo{utls.CertCompressionBrotli}}, // 27
-				&utls.GenericExtension{Id: 17613, Data: []byte{0x00, 0x03, 0x02, 0x68, 0x32}}, // 17613 ALPS
-				&utls.UtlsGREASEExtension{}, // Last GREASE
+				&utls.ExtendedMasterSecretExtension{},             // 23
+				&utls.GenericExtension{Id: 65037, Data: []byte{}}, // 65037 ECH
+				&utls.SupportedVersionsExtension{Versions: []uint16{ // 43
+					utls.GREASE_PLACEHOLDER,
+					utls.VersionTLS13,
+					utls.VersionTLS12,
+				}},
+				&utls.UtlsGREASEExtension{}, // 64250 (Last GREASE)
+				&utls.UtlsPaddingExtension{GetPaddingLen: utls.BoringPaddingStyle},
 			},
 		},
 		H2Settings: illutls.H2Settings{
 			HeaderTableSize:      65536,
 			EnablePush:           0,
+			MaxConcurrentStreams: 0,
 			InitialWindowSize:    6291456,
+			MaxFrameSize:         0,
 			MaxHeaderListSize:    262144,
-			SettingsOrder:        []uint16{1, 2, 4, 6},
 		},
 		H2WindowUpdate: 15663105,
 		H2Priority: illutls.H2Priority{
@@ -110,6 +116,7 @@ func init() {
 			"accept",
 			"sec-fetch-site",
 			"sec-fetch-mode",
+			"sec-fetch-user",
 			"sec-fetch-dest",
 			"sec-fetch-storage-access",
 			"accept-encoding",
@@ -117,18 +124,19 @@ func init() {
 			"priority",
 		},
 		Headers: map[string]string{
-			"sec-ch-ua":                 `"Google Chrome";v="149", "Chromium";v="149", "Not)A;Brand";v="24"`,
+			"sec-ch-ua":                 `"Not;A=Brand";v="8", "Chromium";v="150", "Google Chrome";v="150"`,
 			"sec-ch-ua-mobile":          "?0",
 			"sec-ch-ua-platform":        `"Windows"`,
 			"upgrade-insecure-requests": "1",
-			"user-agent":                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+			"user-agent":                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36",
 			"accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-			"sec-fetch-site":            "cross-site",
+			"sec-fetch-site":            "none",
 			"sec-fetch-mode":            "navigate",
-			"sec-fetch-dest":            "iframe",
+			"sec-fetch-user":            "?1",
+			"sec-fetch-dest":            "document",
 			"sec-fetch-storage-access":  "active",
 			"accept-encoding":           "gzip, deflate, br, zstd",
-			"accept-language":           "en-US,en;q=0.9",
+			"accept-language":           "zh-CN,zh;q=0.9",
 			"priority":                  "u=0, i",
 		},
 	})
