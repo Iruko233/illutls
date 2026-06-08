@@ -41,15 +41,15 @@ import (
 )
 
 func main() {
-	// Create a new client mimicking Chrome 141 on Windows
-	client, err := illutls.New(illutls.WithProfile("Chrome 141 Windows"))
+	// Create a new client mimicking Chrome 149 on Windows
+	client, err := illutls.New(illutls.WithProfile("chrome-149-windows-10"))
 	if err != nil {
 		log.Fatalf("Failed to create client: %v", err)
 	}
 	defer client.Close()
 
 	// Make a GET request
-	resp, err := client.Get("https://tls.peet.ws/api/all")
+	resp, err := client.Get("https://tls.browserleaks.com/json")
 	if err != nil {
 		log.Fatalf("Request failed: %v", err)
 	}
@@ -66,7 +66,9 @@ func main() {
 
 ### Available Profiles
 
-`illutls` includes various pre-built profiles. You can view all available profiles programmatically:
+`illutls` includes various pre-built profiles. [See the full list of supported profiles here.](PROFILES.md)
+
+You can view all available profiles programmatically:
 
 ```go
 profiles := illutls.ListProfiles()
@@ -75,7 +77,7 @@ for _, p := range profiles {
 }
 ```
 
-By default, if you don't specify a profile using `illutls.WithProfile()`, it will default to `"Chrome 141 Windows"`.
+By default, if you don't specify a profile using `illutls.WithProfile()`, it will default to `"chrome-149-windows-10"`.
 
 ### Advanced Usage
 
@@ -85,7 +87,7 @@ You can easily route your traffic through a proxy server using `WithProxy`:
 
 ```go
 client, err := illutls.New(
-    illutls.WithProfile("Chrome 141 Windows"),
+    illutls.WithProfile("chrome-149-windows-10"),
     illutls.WithProxy("http://user:pass@proxy.example.com:8080"),
 )
 ```
@@ -145,15 +147,15 @@ import (
 )
 
 func main() {
-	// 创建一个模拟 Windows Chrome 141 的客户端
-	client, err := illutls.New(illutls.WithProfile("Chrome 141 Windows"))
+	// 创建一个模拟 Windows Chrome 149 的客户端
+	client, err := illutls.New(illutls.WithProfile("chrome-149-windows-10"))
 	if err != nil {
 		log.Fatalf("创建客户端失败: %v", err)
 	}
 	defer client.Close()
 
 	// 发送 GET 请求
-	resp, err := client.Get("https://tls.peet.ws/api/all")
+	resp, err := client.Get("https://tls.browserleaks.com/json")
 	if err != nil {
 		log.Fatalf("请求失败: %v", err)
 	}
@@ -170,7 +172,9 @@ func main() {
 
 ### 可用的浏览器配置 (Profiles)
 
-`illutls` 包含了多种预构建的配置。你可以通过代码查看所有可用的配置名称：
+`illutls` 包含了多种预构建的配置。[点击此处查看所有支持的浏览器配置列表。](PROFILES.md)
+
+你可以通过代码查看所有可用的配置名称：
 
 ```go
 profiles := illutls.ListProfiles()
@@ -179,7 +183,7 @@ for _, p := range profiles {
 }
 ```
 
-默认情况下，如果你在初始化时不通过 `illutls.WithProfile()` 指定配置，它将默认使用 `"Chrome 141 Windows"`。
+默认情况下，如果你在初始化时不通过 `illutls.WithProfile()` 指定配置，它将默认使用 `"chrome-149-windows-10"`。
 
 ### 高级用法
 
@@ -189,7 +193,7 @@ for _, p := range profiles {
 
 ```go
 client, err := illutls.New(
-    illutls.WithProfile("Chrome 141 Windows"),
+    illutls.WithProfile("chrome-149-windows-10"),
     illutls.WithProxy("http://user:pass@proxy.example.com:8080"),
 )
 ```
