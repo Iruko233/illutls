@@ -133,3 +133,49 @@ func RandomizeGREASE(spec *utls.ClientHelloSpec) {
 func isGREASE(v uint16) bool {
 	return (v & 0x0f0f) == 0x0a0a
 }
+
+// ShuffleExtensions safely randomizes the order of TLS extensions to mimic
+// Chrome's Extension Shuffling. It preserves the position of specific
+// extensions like UtlsPaddingExtension and the first UtlsGREASEExtension.
+func ShuffleExtensions(spec *utls.ClientHelloSpec) {
+	if spec == nil || len(spec.Extensions) <= 2 {
+		return
+	}
+
+	var shufflable []utls.TLSExtension
+	var pre []utls.TLSExtension
+	var post []utls.TLSExtension
+
+	for _, ext := range spec.Extensions {
+		switch ext.(type) {
+		case *utls.UtlsPaddingExtension:
+			post = append(post, ext)
+		default:
+			if len(pre) == 0 && isGREASEExt(ext) {
+				// Keep the first GREASE extension at the very beginning
+				pre = append(pre, ext)
+			} else {
+				shufflable = append(shufflable, ext)
+			}
+		}
+	}
+
+	// Shuffle the intermediate extensions
+	rand.Shuffle(len(shufflable), func(i, j int) {
+		shufflable[i], shufflable[j] = shufflable[j], shufflable[i]
+	})
+
+	// Reassemble
+	var result []utls.TLSExtension
+	result = append(result, pre...)
+	result = append(result, shufflable...)
+	result = append(result, post...)
+
+	spec.Extensions = result
+}
+
+// isGREASEExt reports whether ext is a UtlsGREASEExtension.
+func isGREASEExt(ext utls.TLSExtension) bool {
+	_, ok := ext.(*utls.UtlsGREASEExtension)
+	return ok
+}

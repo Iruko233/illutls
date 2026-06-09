@@ -16,6 +16,8 @@ It combines `utls` (for TLS ClientHello simulation) with `fhttp` (for HTTP/2 fra
 - **HTTP/2 Fingerprinting**: Controls HTTP/2 settings, frame order, and pseudo-header order at the lowest level using `fhttp`, accurately simulating real browser behavior.
 - **Pre-configured Profiles**: Ships with real-world browser profiles covering Chrome, Firefox, Edge, and Safari across Windows, macOS, Linux, Android, and iOS.
 - **Concurrency Safe**: `Client` is entirely safe for concurrent use by multiple goroutines.
+- **Dynamic Extension Shuffling**: Optional opt-in to randomize TLS extension order per-connection (`WithShuffleExtensions(true)`), avoiding static "TLS Parroting" fingerprint detection while maintaining stable JA4 hashes.
+- **ECH Bypass**: Automatically mitigates Cloudflare/WAF connection drops by injecting correctly structured dummy GREASE payloads into the ECH extension (65037), protecting signature parity without relying on DNS records.
 - **Proxy Support**: Easily route your simulated requests through HTTP/SOCKS5 proxies.
 
 ### Installation
@@ -122,6 +124,8 @@ resp, err := client.Do(req)
 - **HTTP/2 指纹控制**：使用 `fhttp` 在底层控制 HTTP/2 Settings、帧顺序和伪头（Pseudo-header）顺序，精准模拟真实浏览器行为。
 - **预置配置（Profiles）**：内置了覆盖 Windows, macOS, Linux, Android 和 iOS 平台的真实浏览器特征（包含 Chrome, Firefox, Edge, Safari）。
 - **并发安全**：`Client` 完全支持多 Goroutine 并发安全调用。
+- **动态扩展洗牌 (Anti-Parroting)**：支持在连接层面开启 TLS 扩展乱序重组 (`WithShuffleExtensions(true)`)，每次发包 JA3 皆随机变幻，彻底解决静态“鹦鹉指纹”被风控识别的问题，同时保证 JA4 哈希的绝对稳定。
+- **ECH 过盾增强**：自动修复因空 ECH 扩展（65037）导致的 Cloudflare/WAF 解析崩溃。通过底层注入合规的 106 字节 GREASE 占位载荷，无需真实 DNS 即可保持指纹哈希的完美拟合。
 - **代理支持**：可以轻松将请求通过 HTTP/SOCKS5 代理进行转发。
 
 ### 安装

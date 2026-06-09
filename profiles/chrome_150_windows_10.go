@@ -11,7 +11,9 @@ import (
 // H2: 1:65536;2:0;4:6291456;6:262144|15663105|0|m,a,s,p
 // H2 HASH: 52d84b11737d980aef856699f885ca86
 // Status: Verified Clean (Simulated Windows 10 Chrome 150)
-// Notes: Chrome 150 introduces random extension shuffling and new ML-DSA Post-Quantum Signature Schemes. JA3 is essentially randomized per-connection, but JA4 remains stable.
+// Notes: Chrome 150 introduces random extension shuffling and new ML-DSA Post-Quantum Signature Schemes.
+// Fix Note: Extension 51764 (experimental TrustAnchors) was removed to fix CF 'illegal parameter' error.
+// JA3 is essentially randomized per-connection when Extension Shuffling is enabled, but JA4 remains stable.
 func init() {
 	register(&illutls.BrowserProfile{
 		Name:      "chrome-150-windows-10",
@@ -46,7 +48,7 @@ func init() {
 					{Group: utls.CurveID(4588)},
 					{Group: utls.X25519},
 				}},
-				// &utls.GenericExtension{Id: 51764, Data: []byte{}},                             // 51764 (Experimental)
+				// &utls.GenericExtension{Id: 51764, Data: []byte{}}, // 51764 (Experimental TrustAnchors, commented out to avoid CF block)
 				&utls.SessionTicketExtension{},                                                // 35
 				&utls.SNIExtension{},                                                          // 0
 				&utls.GenericExtension{Id: 17613, Data: []byte{0x00, 0x03, 0x02, 0x68, 0x32}}, // 17613 ALPS

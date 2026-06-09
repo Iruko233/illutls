@@ -26,6 +26,8 @@ type Options struct {
 	MaxRedirects int
 	// DisableKeepAlives disables HTTP keep-alive connections.
 	DisableKeepAlives bool
+	// ShuffleExtensions dynamically randomizes the order of TLS extensions per connection.
+	ShuffleExtensions bool
 }
 
 // Option is a functional option for configuring a Client.
@@ -101,5 +103,13 @@ func WithMaxRedirects(n int) Option {
 func WithDisableKeepAlives() Option {
 	return func(o *Options) {
 		o.DisableKeepAlives = true
+	}
+}
+
+// WithShuffleExtensions dynamically randomizes the order of TLS extensions per connection
+// to mimic Chrome's Extension Shuffling behavior and avoid TLS parroting.
+func WithShuffleExtensions(b bool) Option {
+	return func(o *Options) {
+		o.ShuffleExtensions = b
 	}
 }

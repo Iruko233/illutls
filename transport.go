@@ -43,6 +43,7 @@ type Transport struct {
 	h1Transport *http.Transport
 	mu          sync.Mutex
 	stashedConns map[string]net.Conn
+	shuffleExts  bool
 }
 
 // NewTransport creates a Transport for the given profile.
@@ -54,6 +55,7 @@ func NewTransport(profile *BrowserProfile, opts *Options) (*Transport, error) {
 			KeepAlive: 30 * time.Second,
 		},
 		stashedConns: make(map[string]net.Conn),
+		shuffleExts:  opts.ShuffleExtensions,
 	}
 	// Proxy setup.
 	if opts.ProxyURL != "" {
@@ -181,6 +183,9 @@ func (t *Transport) dialTLSContext(ctx context.Context, network, addr string) (n
 	// 2. Clone and randomize the TLS spec for this connection.
 	spec := CloneClientHelloSpec(t.profile.TLSSpec)
 	RandomizeGREASE(spec)
+	if t.shuffleExts {
+		ShuffleExtensions(spec)
+	}
 	nextProtos := []string{"h2", "http/1.1"}
 	if len(t.tlsCfg.NextProtos) > 0 {
 		nextProtos = t.tlsCfg.NextProtos
