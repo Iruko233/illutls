@@ -46,7 +46,7 @@ func init() {
 					{Group: utls.CurveID(4588)},
 					{Group: utls.X25519},
 				}},
-				&utls.GenericExtension{Id: 51764, Data: []byte{}},                             // 51764 (Experimental)
+				// &utls.GenericExtension{Id: 51764, Data: []byte{}},                             // 51764 (Experimental)
 				&utls.SessionTicketExtension{},                                                // 35
 				&utls.SNIExtension{},                                                          // 0
 				&utls.GenericExtension{Id: 17613, Data: []byte{0x00, 0x03, 0x02, 0x68, 0x32}}, // 17613 ALPS
@@ -77,7 +77,16 @@ func init() {
 				}},
 				&utls.UtlsCompressCertExtension{Algorithms: []utls.CertCompressionAlgo{utls.CertCompressionBrotli}}, // 27
 				&utls.ExtendedMasterSecretExtension{},             // 23
-				&utls.GenericExtension{Id: 65037, Data: []byte{}}, // 65037 ECH
+				&utls.GenericExtension{Id: 65037, Data: []byte{
+					0x00,
+					0x00, 0x01, 0x00, 0x01,
+					0x00,
+					0x00, 0x20,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0x00, 0x40,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				}}, // 65037 ECH
 				&utls.SupportedVersionsExtension{Versions: []uint16{ // 43
 					utls.GREASE_PLACEHOLDER,
 					utls.VersionTLS13,

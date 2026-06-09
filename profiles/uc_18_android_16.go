@@ -43,7 +43,16 @@ func init() {
 				&utls.SNIExtension{},        // 0
 				&utls.RenegotiationInfoExtension{Renegotiation: utls.RenegotiateOnceAsClient}, // 65281
 				&utls.SCTExtension{},                              // 18
-				&utls.GenericExtension{Id: 65037, Data: []byte{}}, // 65037 ECH
+				&utls.GenericExtension{Id: 65037, Data: []byte{
+					0x00,
+					0x00, 0x01, 0x00, 0x01,
+					0x00,
+					0x00, 0x20,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0x00, 0x40,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				}}, // 65037 ECH
 				&utls.UtlsCompressCertExtension{Algorithms: []utls.CertCompressionAlgo{utls.CertCompressionBrotli}}, // 27
 				&utls.PSKKeyExchangeModesExtension{Modes: []uint8{utls.PskModeDHE}},                                 // 45
 				&utls.SupportedPointsExtension{SupportedPoints: []byte{0x00}},                                       // 11

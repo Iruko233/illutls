@@ -54,7 +54,16 @@ func init() {
 				&utls.SessionTicketExtension{},                                                // 35
 				&utls.SCTExtension{},                                                          // 18
 				&utls.ALPNExtension{AlpnProtocols: []string{"h2", "http/1.1"}},                // 16
-				&utls.GenericExtension{Id: 65037, Data: []byte{}},                             // 65037 ECH
+				&utls.GenericExtension{Id: 65037, Data: []byte{
+					0x00,
+					0x00, 0x01, 0x00, 0x01,
+					0x00,
+					0x00, 0x20,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0x00, 0x40,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				}},                             // 65037 ECH
 				&utls.SupportedCurvesExtension{Curves: []utls.CurveID{ // 10
 					utls.GREASE_PLACEHOLDER,
 					utls.CurveID(4588), // X25519MLKEM768

@@ -52,7 +52,16 @@ func init() {
 				}},
 				&utls.SCTExtension{}, // 18
 				&utls.SupportedPointsExtension{SupportedPoints: []byte{0x00}},                 // 11
-				&utls.GenericExtension{Id: 65037, Data: []byte{}},                             // 65037 ECH
+				&utls.GenericExtension{Id: 65037, Data: []byte{
+					0x00,
+					0x00, 0x01, 0x00, 0x01,
+					0x00,
+					0x00, 0x20,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0x00, 0x40,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				}},                             // 65037 ECH
 				&utls.PSKKeyExchangeModesExtension{Modes: []uint8{utls.PskModeDHE}},           // 45
 				&utls.GenericExtension{Id: 17513, Data: []byte{0x00, 0x03, 0x02, 0x68, 0x32}}, // 17513 ALPS
 				&utls.SupportedCurvesExtension{Curves: []utls.CurveID{ // 10

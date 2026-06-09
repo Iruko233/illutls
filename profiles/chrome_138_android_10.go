@@ -45,7 +45,16 @@ func init() {
 					utls.VersionTLS12,
 				}},
 				&utls.UtlsCompressCertExtension{Algorithms: []utls.CertCompressionAlgo{utls.CertCompressionBrotli}}, // 27
-				&utls.GenericExtension{Id: 65037, Data: []byte{}},                                                   // 65037 ECH
+				&utls.GenericExtension{Id: 65037, Data: []byte{
+					0x00,
+					0x00, 0x01, 0x00, 0x01,
+					0x00,
+					0x00, 0x20,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0x00, 0x40,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				}},                                                   // 65037 ECH
 				&utls.SupportedCurvesExtension{Curves: []utls.CurveID{ // 10
 					utls.GREASE_PLACEHOLDER,
 					utls.CurveID(4588), // X25519MLKEM768 or similar

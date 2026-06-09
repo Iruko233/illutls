@@ -55,7 +55,16 @@ func init() {
 					{Group: utls.CurveID(4588)}, // 4588
 					{Group: utls.X25519},        // 29
 				}},
-				&utls.GenericExtension{Id: 65037, Data: []byte{}}, // 65037 ECH
+				&utls.GenericExtension{Id: 65037, Data: []byte{
+					0x00,
+					0x00, 0x01, 0x00, 0x01,
+					0x00,
+					0x00, 0x20,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0x00, 0x40,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				}}, // 65037 ECH
 				&utls.SNIExtension{},                              // 0
 				&utls.SupportedVersionsExtension{Versions: []uint16{ // 43
 					utls.GREASE_PLACEHOLDER,

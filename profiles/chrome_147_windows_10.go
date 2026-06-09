@@ -70,7 +70,16 @@ func init() {
 				}},
 				&utls.ALPNExtension{AlpnProtocols: []string{"h2", "http/1.1"}},                // 16
 				&utls.StatusRequestExtension{},                                                // 5
-				&utls.GenericExtension{Id: 65037, Data: []byte{}},                             // 65037 ECH
+				&utls.GenericExtension{Id: 65037, Data: []byte{
+					0x00,
+					0x00, 0x01, 0x00, 0x01,
+					0x00,
+					0x00, 0x20,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0x00, 0x40,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				}},                             // 65037 ECH
 				&utls.KeyShareExtension{KeyShares: []utls.KeyShare{ // 51
 					{Group: utls.GREASE_PLACEHOLDER, Data: []byte{0}},
 					{Group: utls.CurveID(4588)}, // 4588
