@@ -40,6 +40,7 @@ func defaultOptions() *Options {
 		TLSHandshakeTimeout: 10 * time.Second,
 		FollowRedirects:     true,
 		MaxRedirects:        10,
+		ShuffleExtensions:   true,
 	}
 }
 
