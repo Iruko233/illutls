@@ -144,16 +144,23 @@ func ShuffleExtensions(spec *utls.ClientHelloSpec) {
 
 	var shufflable []utls.TLSExtension
 	var pre []utls.TLSExtension
-	var post []utls.TLSExtension
+	var grease2 []utls.TLSExtension
+	var padding []utls.TLSExtension
+	var psk []utls.TLSExtension
 
 	for _, ext := range spec.Extensions {
 		switch ext.(type) {
 		case *utls.UtlsPaddingExtension:
-			post = append(post, ext)
+			padding = append(padding, ext)
+		case *utls.UtlsPreSharedKeyExtension:
+			psk = append(psk, ext)
 		default:
 			if len(pre) == 0 && isGREASEExt(ext) {
 				// Keep the first GREASE extension at the very beginning
 				pre = append(pre, ext)
+			} else if len(pre) > 0 && isGREASEExt(ext) {
+				// Keep the second GREASE extension before padding
+				grease2 = append(grease2, ext)
 			} else {
 				shufflable = append(shufflable, ext)
 			}
@@ -169,7 +176,9 @@ func ShuffleExtensions(spec *utls.ClientHelloSpec) {
 	var result []utls.TLSExtension
 	result = append(result, pre...)
 	result = append(result, shufflable...)
-	result = append(result, post...)
+	result = append(result, grease2...)
+	result = append(result, padding...)
+	result = append(result, psk...)
 
 	spec.Extensions = result
 }
