@@ -36,6 +36,10 @@ func New(opts ...Option) (*Client, error) {
 	}
 	// Resolve the profile.
 	profile := o.Profile
+	if o.DynamicProfileSeed != nil {
+		profile = GenerateProfile(*o.DynamicProfileSeed, o.DynamicProfilePlatform, o.DynamicProfileVersion, o.ForceRandomizeJA4)
+	}
+
 	if profile == nil {
 		if o.ProfileName == "" {
 			// Default to Chrome 141 Windows if nothing specified.
@@ -47,6 +51,42 @@ func New(opts ...Option) (*Client, error) {
 				ErrProfileNotFound, o.ProfileName, strings.Join(ListProfiles(), ", "))
 		}
 	}
+
+	// Determine Accept-Language based on user options.
+	rawLanguage := "en-US,en" // Default fallback
+
+	if o.RawLanguageList != "" {
+		// 1. Explicit override via WithLanguage
+		if len(o.RawLanguageList) == 2 {
+			isoCode := strings.ToUpper(o.RawLanguageList)
+			langCode, exists := countryToLangCode[isoCode]
+			if !exists {
+				langCode = "en"
+			}
+			rawLanguage = BuildRawLanguageList(langCode, isoCode)
+		} else {
+			rawLanguage = o.RawLanguageList
+		}
+	} else if o.GeoIPDBPath != "" && o.ProxyURL != "" {
+		// 2. Proxy Auto-Adaptation (MMDB Lookup)
+		proxyLang, err := resolveProxyLanguage(o.ProxyURL, o.GeoIPDBPath)
+		if err == nil && proxyLang != "" {
+			// resolveProxyLanguage already runs the Chrome algorithm
+			profile.Headers["accept-language"] = proxyLang
+			rawLanguage = "" // Prevent re-running algorithm below
+		}
+	} else if o.ProfileName == "" && o.Profile != nil {
+		// 3. Dynamic Profile Seed extraction (pseudo-random language based on seed)
+		// We can infer this is a dynamic profile if they used WithDynamicProfile but no language.
+		// Let's assume if it's a dynamic profile, it should have a seed-based language.
+		// Wait, we need the seed to do pseudo-random. Since the profile is already generated, 
+		// we should actually inject it inside GenerateProfile in generator.go.
+	}
+
+	if rawLanguage != "" {
+		profile.Headers["accept-language"] = GenerateAcceptLanguageHeader(rawLanguage)
+	}
+
 	// Build the transport.
 	transport, err := NewTransport(profile, o)
 	if err != nil {
