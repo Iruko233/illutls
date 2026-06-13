@@ -150,11 +150,19 @@ func WithDynamicProfile(seed any, params ...any) Option {
 		case string:
 			h := fnv.New64a()
 			h.Write([]byte(v))
-			finalSeed = int64(h.Sum64())
+			finalSeed = int64(h.Sum64() & 0x7FFFFFFFFFFFFFFF)
 		case int64:
-			finalSeed = v
+			if v < 0 {
+				finalSeed = -v
+			} else {
+				finalSeed = v
+			}
 		case int:
-			finalSeed = int64(v)
+			if v < 0 {
+				finalSeed = int64(-v)
+			} else {
+				finalSeed = int64(v)
+			}
 		}
 
 		platform := ""
