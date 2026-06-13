@@ -1,8 +1,40 @@
 package illutls
 
 import (
+	"net/url"
+	"strings"
+
 	http "github.com/bogdanfinn/fhttp"
 )
+
+// calculateSecFetchSite determines the relationship between the referer and target URL.
+// It roughly mimics Chromium's GetRelationOfURLChainToOrigin logic.
+func calculateSecFetchSite(referer string, targetURL *url.URL) string {
+	if referer == "" || targetURL == nil {
+		return "none"
+	}
+	refURL, err := url.Parse(referer)
+	if err != nil {
+		return "cross-site"
+	}
+
+	if refURL.Hostname() == targetURL.Hostname() {
+		return "same-origin"
+	}
+
+	// Simplistic same-site check (checking if they share the root domain)
+	refParts := strings.Split(refURL.Hostname(), ".")
+	targetParts := strings.Split(targetURL.Hostname(), ".")
+	
+	if len(refParts) >= 2 && len(targetParts) >= 2 {
+		refRoot := refParts[len(refParts)-2] + "." + refParts[len(refParts)-1]
+		targetRoot := targetParts[len(targetParts)-2] + "." + targetParts[len(targetParts)-1]
+		if refRoot == targetRoot {
+			return "same-site"
+		}
+	}
+	return "cross-site"
+}
 
 // BuildHeaders constructs the full HTTP header set for a request according
 // to the profile's template and ordering rules.
@@ -12,8 +44,29 @@ import (
 // etc.) come from the profile definition.
 func BuildHeaders(profile *BrowserProfile, req *http.Request) http.Header {
 	h := make(http.Header)
-	// 1. Apply default headers from the profile.
+
+	// Heuristic Lock-Free Context Inference:
+	// If the user explicitly sets Accept: application/json or provides a Referer,
+	// we infer this is an API/Fetch request, not a top-level document navigation.
+	acceptHeader := strings.ToLower(req.Header.Get("Accept"))
+	isAPIRequest := strings.Contains(acceptHeader, "json") || 
+					strings.Contains(acceptHeader, "*/*") || 
+					req.Header.Get("Referer") != "" ||
+					req.Header.Get("X-Requested-With") == "XMLHttpRequest"
+
+	// 1. Apply default headers from the profile, intercepting sec-fetch-* if it's an API request.
 	for k, v := range profile.Headers {
+		if isAPIRequest {
+			if k == "sec-fetch-dest" && req.Header.Get("sec-fetch-dest") == "" {
+				v = "empty"
+			} else if k == "sec-fetch-mode" && req.Header.Get("sec-fetch-mode") == "" {
+				v = "cors"
+			} else if k == "sec-fetch-site" && req.Header.Get("sec-fetch-site") == "" {
+				v = calculateSecFetchSite(req.Header.Get("Referer"), req.URL)
+			} else if k == "sec-fetch-user" && req.Header.Get("sec-fetch-user") == "" {
+				continue // Do not include sec-fetch-user for API requests
+			}
+		}
 		h.Set(k, v)
 	}
 	// 2. Always set User-Agent from the profile.
